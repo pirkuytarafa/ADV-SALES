@@ -15226,21 +15226,47 @@ function resetPublicStockForm() {
 <script>
 // PUBLIC FORM MODE DETECTION & HANDLING
 (function() {
+    // Check URL parameter on every page load
     const urlParams = new URLSearchParams(window.location.search);
     const mode = urlParams.get('mode');
     
+    console.log('URL Params:', window.location.search);
+    console.log('Mode detected:', mode);
+    
     if (mode === 'public-form') {
+        console.log('Public form mode activated!');
+        
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showPublicForm);
+        } else {
+            showPublicForm();
+        }
+    }
+    
+    function showPublicForm() {
+        console.log('Showing public form...');
+        
         // Show public form page, hide everything else
-        document.getElementById('public-form-page').classList.remove('hidden');
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('app-container').classList.add('hidden');
+        const publicPage = document.getElementById('public-form-page');
+        const loader = document.getElementById('loader');
+        const loginPage = document.getElementById('login-page');
+        const appContainer = document.getElementById('app-container');
+        
+        if (publicPage) {
+            publicPage.classList.remove('hidden');
+            console.log('Public form page shown');
+        }
+        if (loader) loader.style.display = 'none';
+        if (loginPage) loginPage.classList.add('hidden');
+        if (appContainer) appContainer.classList.add('hidden');
         
         // Initialize public form
-        initPublicForm();
+        setTimeout(initPublicForm, 100);
     }
     
     function initPublicForm() {
+        console.log('Initializing public form...');
         loadPublicBSList();
         publicAddEntry(); // Add initial entry
     }
@@ -15260,8 +15286,14 @@ function resetPublicStockForm() {
         }
         
         const bsSelect = document.getElementById('public-bs-select');
+        if (!bsSelect) {
+            console.error('BS select not found!');
+            return;
+        }
+        
         if (!data.businessSolutions || data.businessSolutions.length === 0) {
             bsSelect.innerHTML = '<option value="">Belum ada data BS di sistem</option>';
+            console.log('No BS data found');
             return;
         }
         
@@ -15272,6 +15304,7 @@ function resetPublicStockForm() {
             option.textContent = bs.name;
             bsSelect.appendChild(option);
         });
+        console.log('BS list loaded:', data.businessSolutions.length);
     }
     
     function getCurrentUserId() {
@@ -15291,6 +15324,11 @@ function resetPublicStockForm() {
     
     window.publicAddEntry = function() {
         const container = document.getElementById('public-entries-container');
+        if (!container) {
+            console.error('Entries container not found!');
+            return;
+        }
+        
         const entryId = ++publicEntryCounter;
         const currentMonth = new Date().toISOString().substr(0, 7);
         
@@ -15351,6 +15389,7 @@ function resetPublicStockForm() {
         `;
         
         container.appendChild(entryDiv);
+        console.log('Entry added:', entryId);
     };
     
     window.publicRemoveEntry = function(entryId) {

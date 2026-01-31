@@ -1425,6 +1425,17 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
 </head>
 <body class="bg-gray-50">
 
+<script>
+// IMMEDIATE CHECK - Run before anything else
+(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('mode') === 'public-form') {
+        // Add style to immediately hide non-public elements
+        document.write('<style>#loader, #login-page, #app-container { display: none !important; } #public-form-page { display: block !important; }</style>');
+    }
+})();
+</script>
+
     <!-- Public Form Page (shown when ?mode=public-form) -->
     <div id="public-form-page" class="hidden min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <!-- Header -->

@@ -1312,8 +1312,16 @@ html, body {
   color: #CFE0FF !important;
 }
 #sidebar .nav-link.active {
-  background: linear-gradient(135deg, var(--adv-gold), var(--adv-gold-dark)) !important;
-  color: #1F2937 !important;
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3) !important;
+}
+#sidebar .nav-group-header {
+  color: #E0E7FF !important;
+}
+#sidebar .nav-group-header:hover {
+  background: rgba(59, 130, 246, 0.2) !important;
 }
 
 /* TABLE */
@@ -1473,25 +1481,7 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 <div class="flex-1 flex items-center justify-between gap-4 ml-2 md:ml-0">
                     <h2 id="page-title" class="text-2xl font-bold text-gray-800">Dashboard</h2>
                     
-                    <!-- Global Search -->
-                    <div class="hidden md:block flex-1 max-w-md mx-4">
-                        <div class="relative">
-                            <input 
-                                type="text" 
-                                id="global-search-input" 
-                                placeholder="Search PO, Distributor, Varietas..." 
-                                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                autocomplete="off"
-                            />
-                            <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            <!-- Search Results Dropdown -->
-                            <div id="global-search-results" class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-96 overflow-y-auto z-50">
-                                <!-- Results will be inserted here -->
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Global Search - REMOVED -->
 
 <div class="flex items-center gap-3">
                         <div id="user-profile" class="hidden sm:flex items-center gap-3">
@@ -1959,6 +1949,19 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                             <li>Data akan langsung masuk ke sistem</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+
+            <!-- Data Stok yang Sudah Diinput -->
+            <div id="public-stock-list-section" class="mt-6 bg-white rounded-xl shadow-lg p-6" style="display:none;">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Data Stok yang Sudah Diinput
+                </h3>
+                <div id="public-stock-list" class="space-y-3">
+                    <!-- Data will be inserted here -->
                 </div>
             </div>
         </div>
@@ -2482,7 +2485,7 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
             
             const bsList = Object.values(bsMap);
             if (bsList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><p class="font-medium">Belum ada kegiatan</p></div></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-12 text-center text-gray-700"><div class="flex flex-col items-center gap-2"><svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg><p class="font-bold text-gray-800">Belum ada kegiatan</p></div></td></tr>';
                 return;
             }
 
@@ -2490,10 +2493,10 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50 transition';
                 
-                let rowHTML = `<td class="px-4 py-4 font-semibold text-gray-800 border-r border-gray-200">
+                let rowHTML = `<td class="px-4 py-4 font-bold text-gray-900 border-r border-gray-300 bg-white sticky left-0 z-10">
                     <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                        ${bs.name}
+                        <div class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-sm"></div>
+                        <span class="text-sm">${bs.name}</span>
                     </div>
                 </td>`;
 
@@ -2507,11 +2510,11 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 };
 
                 const badgeColors = {
-                    'FM': 'bg-blue-500 text-white',
-                    'ODP': 'bg-green-500 text-white',
-                    'FT': 'bg-yellow-500 text-white',
-                    'FFD': 'bg-purple-500 text-white',
-                    'DISPLAY': 'bg-pink-500 text-white'
+                    'FM': 'bg-blue-600 text-white',
+                    'ODP': 'bg-green-600 text-white',
+                    'FT': 'bg-yellow-600 text-gray-900',
+                    'FFD': 'bg-purple-600 text-white',
+                    'DISPLAY': 'bg-pink-600 text-white'
                 };
 
                 for (let week = 1; week <= 5; week++) {
@@ -2520,33 +2523,84 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                     
                     if (weekActivities.length === 0) {
                         rowHTML += `<td class="px-4 py-4 text-center ${cellClass} border-r border-gray-200">
-                            <span class="text-xs text-gray-400">-</span>
+                            <span class="text-xs text-gray-600 font-semibold">-</span>
                         </td>`;
                     } else {
-                        rowHTML += `<td class="px-4 py-3 ${cellClass} border-r border-gray-200">
-                            <div class="space-y-2">`;
-                        
+                        // Aggregate activities by type
+                        const typeCounts = {};
                         weekActivities.forEach(activity => {
-                            const badgeColor = badgeColors[activity.type] || 'bg-gray-500 text-white';
+                            const count = activity.count || 1; // Use activity.count if exists, else 1
+                            if (!typeCounts[activity.type]) {
+                                typeCounts[activity.type] = {
+                                    count: 0,
+                                    ids: [],
+                                    descriptions: []
+                                };
+                            }
+                            typeCounts[activity.type].count += count;
+                            typeCounts[activity.type].ids.push(activity.id);
+                            if (activity.description) {
+                                typeCounts[activity.type].descriptions.push(activity.description);
+                            }
+                        });
+                        
+                        rowHTML += `<td class="px-3 py-3 ${cellClass} border-r border-gray-200">
+                            <div class="flex flex-wrap gap-1.5 justify-center">`;
+                        
+                        // Display compact format: "FM 3", "FT 1", etc
+                        Object.entries(typeCounts).forEach(([type, data]) => {
+                            const badgeColor = badgeColors[type] || 'bg-gray-500 text-white';
+                            const tooltip = data.descriptions.length > 0 
+                                ? data.descriptions.join(', ') 
+                                : 'Tidak ada keterangan';
+                            
                             rowHTML += `
-                                <div class="bg-white rounded-lg shadow-sm p-2 border border-gray-200 hover:shadow-md transition group">
-                                    <div class="flex items-start justify-between gap-2 mb-1">
-                                        <span class="inline-block px-2 py-0.5 ${badgeColor} rounded text-xs font-bold">${activity.type}</span>
-                                        <button onclick="window.deleteDGAActivity(${activity.id})" 
-                                                class="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition"
-                                                title="Hapus">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
+                                <div class="inline-flex items-center gap-1 group relative">
+                                    <span class="inline-block px-2.5 py-1 ${badgeColor} rounded-md text-xs font-bold shadow-sm">${type} ${data.count}</span>
+                                    <button onclick="window.deleteDGAActivitiesByIds([${data.ids.join(',')}])" 
+                                            class="opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-800 transition"
+                                            title="Hapus semua ${type}">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                    <div class="hidden group-hover:block absolute bottom-full left-0 mb-1 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap z-10 shadow-lg">
+                                        ${tooltip}
                                     </div>
-                                    <p class="text-xs text-gray-600 line-clamp-2">${activity.description || 'Tidak ada keterangan'}</p>
                                 </div>`;
                         });
                         
                         rowHTML += `</div></td>`;
                     }
                 }
+
+                // Calculate total for all weeks
+                const totalCounts = {};
+                for (let week = 1; week <= 5; week++) {
+                    const weekActivities = bs.weeks[week.toString()] || [];
+                    weekActivities.forEach(activity => {
+                        const count = activity.count || 1;
+                        if (!totalCounts[activity.type]) {
+                            totalCounts[activity.type] = 0;
+                        }
+                        totalCounts[activity.type] += count;
+                    });
+                }
+
+                // Display total column
+                rowHTML += `<td class="px-4 py-3 bg-gradient-to-br from-gray-50 to-gray-100 border-l-2 border-gray-300 font-semibold">
+                    <div class="flex flex-wrap gap-1.5 justify-center">`;
+                
+                if (Object.keys(totalCounts).length === 0) {
+                    rowHTML += `<span class="text-xs text-gray-600 font-semibold">-</span>`;
+                } else {
+                    Object.entries(totalCounts).forEach(([type, count]) => {
+                        const badgeColor = badgeColors[type] || 'bg-gray-500 text-white';
+                        rowHTML += `<span class="inline-block px-2.5 py-1 ${badgeColor} rounded-md text-xs font-bold shadow-sm">${type} ${count}</span>`;
+                    });
+                }
+                
+                rowHTML += `</div></td>`;
 
                 tr.innerHTML = rowHTML;
                 tbody.appendChild(tr);
@@ -2600,6 +2654,165 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
             saveData();
             window.refreshDGAPage();
             showToast('Kegiatan berhasil dihapus', 'success');
+        };
+
+        window.deleteDGAActivitiesByIds = function(ids) {
+            if (!confirm(`Hapus semua kegiatan ini (${ids.length} item)?`)) return;
+            
+            appState.dgaActivities = appState.dgaActivities.filter(a => !ids.includes(a.id));
+            saveData();
+            window.refreshDGAPage();
+            showToast('Kegiatan berhasil dihapus', 'success');
+        };
+
+        // === BATCH INPUT MODAL FUNCTIONS ===
+        window.openBatchInputModal = function() {
+            const modal = document.getElementById('batch-input-modal');
+            if (!modal) return;
+            
+            // Reset form
+            document.getElementById('batch-month').value = new Date().toISOString().substr(0, 7);
+            document.getElementById('batch-bs').value = '';
+            document.getElementById('batch-input-tbody').innerHTML = '';
+            
+            // Populate BS dropdown
+            const bsSelect = document.getElementById('batch-bs');
+            bsSelect.innerHTML = '<option value="">Pilih BS</option>';
+            const allBS = appState.businessSolutions || [];
+            allBS.forEach(bs => {
+                const opt = document.createElement('option');
+                opt.value = bs.id;
+                opt.textContent = bs.name;
+                bsSelect.appendChild(opt);
+            });
+            
+            // Add initial row
+            addBatchRow();
+            
+            // Show modal with animation
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.querySelector('.bg-white').classList.remove('scale-95', 'opacity-0');
+                modal.querySelector('.bg-white').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        // === PUBLIC DGA FORM FUNCTIONS ===
+        window.openPublicDGAModal = function() {
+            // Generate proper public form URL using same base as current page
+            const currentURL = window.location.href;
+            const currentPath = window.location.pathname;
+            
+            // Get base URL by removing the filename from current URL
+            let baseURL = currentURL;
+            if (currentPath.includes('/')) {
+                const lastSlashIndex = currentURL.lastIndexOf('/');
+                baseURL = currentURL.substring(0, lastSlashIndex + 1);
+            }
+            
+            const publicURL = baseURL + 'public-dga-form.html';
+            
+            console.log('Generated Public URL:', publicURL);
+            
+            // Show modal with link
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full transform scale-95 opacity-0 transition-all" id="link-modal-content">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-5 rounded-t-2xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white flex items-center gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                    Link Public Form BS
+                                </h3>
+                                <p class="text-green-100 text-sm mt-1">Share link ini ke BS untuk input kegiatan batch</p>
+                            </div>
+                            <button onclick="this.closest('.fixed').remove()" class="text-white hover:bg-white/20 rounded-lg p-2 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-gray-700 mb-2">🔗 Link Public Form:</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="public-url-input" value="${publicURL}" readonly class="flex-1 px-4 py-3 bg-gray-50 border-2 border-gray-300 rounded-lg text-sm font-mono" onclick="this.select()">
+                                <button onclick="copyPublicLink()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4">
+                            <h4 class="font-bold text-blue-900 mb-2 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Cara Menggunakan:
+                            </h4>
+                            <ol class="list-decimal list-inside space-y-2 text-sm text-blue-800">
+                                <li>Copy link di atas dengan klik tombol "Copy"</li>
+                                <li>Share link ke BS melalui WhatsApp, Email, atau chat lainnya</li>
+                                <li>BS buka link tersebut di browser mereka</li>
+                                <li>BS pilih nama mereka sendiri dari dropdown</li>
+                                <li>BS isi kegiatan batch mereka (bisa banyak sekaligus)</li>
+                                <li>Setelah submit, data otomatis masuk ke sistem Anda! ✅</li>
+                            </ol>
+                        </div>
+                        <div class="mt-4 flex gap-3">
+                            <button onclick="shareViaWhatsApp()" class="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                </svg>
+                                Share via WhatsApp
+                            </button>
+                            <button onclick="window.open('${publicURL}', '_blank')" class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-bold transition flex items-center justify-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                Buka Form (Preview)
+                            </button>
+                            <button onclick="this.closest('.fixed').remove()" class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl font-bold transition">
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            setTimeout(() => {
+                const content = document.getElementById('link-modal-content');
+                if (content) {
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                }
+            }, 10);
+        };
+
+        window.copyPublicLink = function() {
+            const input = document.getElementById('public-url-input');
+            input.select();
+            document.execCommand('copy');
+            
+            showToast('Link berhasil di-copy! 📋', 'success');
+        };
+
+        window.shareViaWhatsApp = function() {
+            const input = document.getElementById('public-url-input');
+            let linkText = input.value;
+            
+            console.log('Sharing URL via WhatsApp:', linkText);
+            
+            // Ensure we have a valid URL
+            if (!linkText || linkText === '') {
+                alert('Link tidak tersedia');
+                return;
+            }
+            
+            const message = `Halo! Silakan isi form kegiatan DGA melalui link berikut:\n\n${linkText}\n\nTerima kasih!`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            
+            console.log('WhatsApp URL:', whatsappUrl);
+            window.open(whatsappUrl, '_blank');
         };
 
         // === BATCH INPUT MODAL FUNCTIONS ===
@@ -2707,75 +2920,115 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
             if (tr) tr.remove();
         };
 
-        window.saveBatchInput = function() {
-            const month = document.getElementById('batch-month').value;
-            const bsId = document.getElementById('batch-bs').value;
+        window.saveBatchInput = async function() {
+            // Show loading indicator
+            showToast('⏳ Memproses data...', 'info');
             
-            if (!month) {
-                showToast('Pilih bulan terlebih dahulu', 'error');
-                return;
-            }
-            
-            if (!bsId) {
-                showToast('Pilih Business Solution terlebih dahulu', 'error');
-                return;
-            }
-            
-            const bsName = document.getElementById('batch-bs').selectedOptions[0].textContent;
-            const tbody = document.getElementById('batch-input-tbody');
-            const rows = tbody.querySelectorAll('tr');
-            
-            if (rows.length === 0) {
-                showToast('Tambahkan minimal satu baris data', 'error');
-                return;
-            }
-            
-            let addedCount = 0;
-            const activityTypes = [
-                { class: 'fm-input', type: 'FM' },
-                { class: 'odp-input', type: 'ODP' },
-                { class: 'ft-input', type: 'FT' },
-                { class: 'ffd-input', type: 'FFD' },
-                { class: 'display-input', type: 'DISPLAY' }
-            ];
-            
-            rows.forEach(row => {
-                const week = row.querySelector('.week-select').value;
-                const description = row.querySelector('.desc-input').value.trim();
+            try {
+                const month = document.getElementById('batch-month').value;
+                const bsId = document.getElementById('batch-bs').value;
                 
-                activityTypes.forEach(({ class: className, type }) => {
-                    const input = row.querySelector('.' + className);
-                    const count = parseInt(input.value) || 0;
+                if (!month) {
+                    showToast('❌ Pilih bulan terlebih dahulu', 'error');
+                    return;
+                }
+                
+                if (!bsId) {
+                    showToast('❌ Pilih Business Solution terlebih dahulu', 'error');
+                    return;
+                }
+                
+                const bsName = document.getElementById('batch-bs').selectedOptions[0].textContent;
+                const tbody = document.getElementById('batch-input-tbody');
+                const rows = tbody.querySelectorAll('tr');
+                
+                if (rows.length === 0) {
+                    showToast('❌ Tambahkan minimal satu baris data', 'error');
+                    return;
+                }
+                
+                let addedCount = 0;
+                const activityTypes = [
+                    { class: 'fm-input', type: 'FM' },
+                    { class: 'odp-input', type: 'ODP' },
+                    { class: 'ft-input', type: 'FT' },
+                    { class: 'ffd-input', type: 'FFD' },
+                    { class: 'display-input', type: 'DISPLAY' }
+                ];
+                
+                // Initialize dgaActivities array - FORCE it to be an array
+                if (!appState.dgaActivities || !Array.isArray(appState.dgaActivities)) {
+                    appState.dgaActivities = [];
+                }
+                
+                rows.forEach(row => {
+                    const week = row.querySelector('.week-select').value;
+                    const description = row.querySelector('.desc-input').value.trim();
                     
-                    // Add activity for each count
-                    for (let i = 0; i < count; i++) {
-                        if (!appState.dgaActivities) appState.dgaActivities = [];
+                    activityTypes.forEach(({ class: className, type }) => {
+                        const input = row.querySelector('.' + className);
+                        const count = parseInt(input.value) || 0;
                         
-                        const newActivity = {
-                            id: Date.now() + Math.random(),
-                            month: month,
-                            week: week,
-                            bsId: parseInt(bsId),
-                            bsName: bsName,
-                            type: type,
-                            description: description || `${type} ${i + 1}`
-                        };
-                        
-                        appState.dgaActivities.push(newActivity);
-                        addedCount++;
-                    }
+                        // Only add if count > 0, and add just ONE activity with the count
+                        if (count > 0) {
+                            const newActivity = {
+                                id: Date.now() + Math.random(),
+                                month: month,
+                                week: week,
+                                bsId: parseInt(bsId),
+                                bsName: bsName,
+                                type: type,
+                                count: count, // Store the count instead of creating multiple entries
+                                description: description || `${type} W${week}`,
+                                createdAt: new Date().toISOString()
+                            };
+                            
+                            appState.dgaActivities.push(newActivity);
+                            addedCount += count; // Count total for success message
+                        }
+                    });
                 });
-            });
-            
-            if (addedCount === 0) {
-                showToast('Tidak ada data yang diinput (semua kolom 0)', 'error');
-                return;
+                
+                if (addedCount === 0) {
+                    showToast('❌ Tidak ada data yang diinput (semua kolom 0)', 'error');
+                    return;
+                }
+                
+                // Save to localStorage immediately
+                showToast('💾 Menyimpan data...', 'info');
+                try {
+                    localStorage.setItem('advantaSalesData', JSON.stringify(appState));
+                } catch (error) {
+                    showToast('❌ Gagal menyimpan ke localStorage: ' + error.message, 'error');
+                    return;
+                }
+                
+                // Try save to Firestore if logged in
+                if (currentUser && typeof window.saveData === 'function') {
+                    try {
+                        await window.saveData();
+                    } catch (error) {
+                        showToast('⚠️ Gagal menyimpan ke cloud, data tersimpan lokal', 'error');
+                    }
+                }
+                
+                // Refresh DGA page
+                if (typeof window.refreshDGAPage === 'function') {
+                    window.refreshDGAPage();
+                }
+                
+                // Close modal
+                if (typeof window.closeBatchInputModal === 'function') {
+                    window.closeBatchInputModal();
+                }
+                
+                // Show success
+                showToast(`✅ Berhasil menambahkan ${addedCount} kegiatan!`, 'success');
+                
+            } catch (error) {
+                showToast('💥 ERROR: ' + error.message, 'error');
+                alert('Terjadi kesalahan:\n\n' + error.message + '\n\nStack: ' + error.stack);
             }
-            
-            saveData();
-            window.refreshDGAPage();
-            closeBatchInputModal();
-            showToast(`Berhasil menambahkan ${addedCount} kegiatan`, 'success');
         };
 
         // === PRESENTATION FUNCTIONS ===
@@ -2805,6 +3058,23 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                     option.value = year;
                     option.textContent = 'FY ' + year + '-' + (year + 1);
                     yearSelect.appendChild(option);
+                }
+            }
+            
+            // Initialize FY comparison dropdowns
+            const fy1Select = document.getElementById('fy-compare-1');
+            const fy2Select = document.getElementById('fy-compare-2');
+            if (fy1Select && fy1Select.options.length === 1) {
+                for (let year = 2022; year <= 2080; year++) {
+                    const opt1 = document.createElement('option');
+                    opt1.value = year;
+                    opt1.textContent = 'FY ' + year + '-' + (year + 1);
+                    fy1Select.appendChild(opt1);
+                    
+                    const opt2 = document.createElement('option');
+                    opt2.value = year;
+                    opt2.textContent = 'FY ' + year + '-' + (year + 1);
+                    fy2Select.appendChild(opt2);
                 }
             }
             
@@ -2881,10 +3151,18 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 }
                 
                 if (startDate && endDate) {
+                    // Filter POs that have releases in the selected period
                     pos = pos.filter(po => {
-                        if (!po.poDate) return false;
-                        const poDate = new Date(po.poDate);
-                        return poDate >= startDate && poDate <= endDate;
+                        if (!po.items || !Array.isArray(po.items)) return false;
+                        // Check if any item has releases in this period
+                        return po.items.some(item => {
+                            const releases = item.releases || [];
+                            return releases.some(r => {
+                                if (!r.releaseDate) return false;
+                                const releaseDate = new Date(r.releaseDate);
+                                return releaseDate >= startDate && releaseDate <= endDate;
+                            });
+                        });
                     });
                     dgaActivities = dgaActivities.filter(act => {
                         if (!act.month) return false;
@@ -2915,9 +3193,22 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 if (po.items && Array.isArray(po.items)) {
                     po.items.forEach(item => {
                         const releases = item.releases || [];
-                        const releasedQty = releases.reduce((sum, r) => sum + (r.qty || 0), 0);
-                        totalQty += releasedQty;
-                        totalSales += releasedQty * (item.price || 0);
+                        // Only count releases in the selected period
+                        releases.forEach(r => {
+                            if (!r.releaseDate) return;
+                            const releaseDate = new Date(r.releaseDate);
+                            // If period filter is active, only count releases in that period
+                            if (startDate && endDate) {
+                                if (releaseDate >= startDate && releaseDate <= endDate) {
+                                    totalQty += r.qty || 0;
+                                    totalSales += (r.qty || 0) * (item.price || 0);
+                                }
+                            } else {
+                                // No period filter, count all releases
+                                totalQty += r.qty || 0;
+                                totalSales += (r.qty || 0) * (item.price || 0);
+                            }
+                        });
                     });
                 }
             });
@@ -2939,6 +3230,7 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
             renderRecentPOTable(pos);
             renderTopCustomers(pos);
             renderDGASummary(dgaActivities);
+            renderStockDistributorTable();
         };
         
         function renderSalesTrendChart(pos) {
@@ -3112,39 +3404,73 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
         }
         
         function renderDGAChart(activities) {
-            const ctx = document.getElementById('dga-activities-chart');
-            if (!ctx) return;
+            const tbody = document.getElementById('dga-bs-detail-body');
+            if (!tbody) return;
             
-            if (presentationCharts.dga) {
-                presentationCharts.dga.destroy();
-            }
+            // Group activities by BS
+            const bsData = {};
+            const allBS = appState.businessSolutions || [];
             
-            const counts = { FM: 0, ODP: 0, FT: 0, FFD: 0, DISPLAY: 0 };
-            activities.forEach(a => {
-                if (counts[a.type] !== undefined) counts[a.type]++;
-            });
-            
-            presentationCharts.dga = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(counts),
-                    datasets: [{
-                        data: Object.values(counts),
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 1.5,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 12, padding: 10, font: { size: 11 } }
-                        }
-                    }
+            activities.forEach(activity => {
+                const bsId = activity.bsId;
+                if (!bsData[bsId]) {
+                    bsData[bsId] = {
+                        FM: 0, ODP: 0, FT: 0, FFD: 0, DISPLAY: 0, total: 0
+                    };
+                }
+                const count = activity.count || 1;
+                if (bsData[bsId][activity.type] !== undefined) {
+                    bsData[bsId][activity.type] += count;
+                    bsData[bsId].total += count;
                 }
             });
+            
+            if (Object.keys(bsData).length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="font-medium">Belum ada kegiatan DGA</p>
+                    </div>
+                </td></tr>`;
+                return;
+            }
+            
+            // Sort by total (descending)
+            const sortedBS = Object.entries(bsData).sort((a, b) => b[1].total - a[1].total);
+            
+            tbody.innerHTML = sortedBS.map(([bsId, data]) => {
+                const bs = allBS.find(b => b.id == bsId);
+                const bsName = bs ? bs.name : `BS ${bsId}`;
+                
+                return `<tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 font-semibold text-gray-900">
+                        <div class="flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                            ${bsName}
+                        </div>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-block px-2 py-1 ${data.FM > 0 ? 'bg-blue-100 text-blue-800 font-semibold' : 'text-gray-400'} rounded text-xs">${data.FM}</span>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-block px-2 py-1 ${data.ODP > 0 ? 'bg-green-100 text-green-800 font-semibold' : 'text-gray-400'} rounded text-xs">${data.ODP}</span>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-block px-2 py-1 ${data.FT > 0 ? 'bg-yellow-100 text-yellow-800 font-semibold' : 'text-gray-400'} rounded text-xs">${data.FT}</span>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-block px-2 py-1 ${data.FFD > 0 ? 'bg-purple-100 text-purple-800 font-semibold' : 'text-gray-400'} rounded text-xs">${data.FFD}</span>
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-block px-2 py-1 ${data.DISPLAY > 0 ? 'bg-pink-100 text-pink-800 font-semibold' : 'text-gray-400'} rounded text-xs">${data.DISPLAY}</span>
+                    </td>
+                    <td class="px-3 py-3 text-center bg-gray-50">
+                        <span class="inline-block px-2.5 py-1 bg-gray-800 text-white font-bold rounded-md text-xs">${data.total}</span>
+                    </td>
+                </tr>`;
+            }).join('');
         }
         
         function renderPOStatusChart(pos) {
@@ -3278,6 +3604,433 @@ html.dark #edit-market-size-modal button:not(.bg-blue-600){
                 </div>`;
             }).join('');
         }
+
+        function renderStockDistributorTable() {
+            const tbody = document.getElementById('pres-stock-table');
+            const countEl = document.getElementById('pres-stock-count');
+            if (!tbody) return;
+            
+            const stocks = appState.stockDistributor || [];
+            const distributors = appState.distributors || [];
+            const varieties = appState.varieties || [];
+            
+            // Update count
+            if (countEl) {
+                countEl.textContent = `${stocks.length} item`;
+            }
+            
+            if (stocks.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <p class="font-medium">Belum ada data stok distributor</p>
+                    </div>
+                </td></tr>`;
+                return;
+            }
+            
+            // Sort by date (newest first)
+            const sortedStocks = [...stocks].sort((a, b) => {
+                const dateA = new Date(a.date || 0);
+                const dateB = new Date(b.date || 0);
+                return dateB - dateA;
+            });
+            
+            tbody.innerHTML = sortedStocks.map(stock => {
+                const distributor = distributors.find(d => d.id == stock.distributorId);
+                const variety = varieties.find(v => v.id == stock.varietyId);
+                const distName = distributor ? distributor.name : 'N/A';
+                const varName = variety ? variety.name : 'N/A';
+                
+                return `<tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 text-gray-700">${formatDate(stock.date)}</td>
+                    <td class="px-4 py-3 text-gray-900 font-medium">${distName}</td>
+                    <td class="px-4 py-3 text-gray-700">${varName}</td>
+                    <td class="px-4 py-3 text-right font-semibold text-gray-900">${parseFloat(stock.qty || 0).toLocaleString('id-ID')}</td>
+                    <td class="px-4 py-3 text-center">
+                        <span class="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-mono">${stock.lotNumber || '-'}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-600 text-xs">${stock.notes || '-'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // FY Comparison Functions
+        window.toggleFYComparison = function() {
+            const panel = document.getElementById('fy-compare-panel');
+            const btn = document.getElementById('fy-compare-btn');
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                btn.classList.add('bg-white/40');
+            } else {
+                panel.classList.add('hidden');
+                btn.classList.remove('bg-white/40');
+            }
+        };
+
+        window.refreshFYComparison = function() {
+            const fy1 = document.getElementById('fy-compare-1')?.value;
+            const fy2 = document.getElementById('fy-compare-2')?.value;
+            
+            if (!fy1 || !fy2) {
+                document.getElementById('fy-comparison-results').classList.add('hidden');
+                return;
+            }
+            
+            // Calculate metrics for FY1
+            const fy1Data = calculateFYMetricsDetailed(parseInt(fy1));
+            // Calculate metrics for FY2
+            const fy2Data = calculateFYMetricsDetailed(parseInt(fy2));
+            
+            // Update headers
+            document.getElementById('fy1-header').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>FY ${fy1}-${parseInt(fy1) + 1}`;
+            document.getElementById('fy2-header').innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>FY ${fy2}-${parseInt(fy2) + 1}`;
+            document.getElementById('fy-comparison-title').textContent = 
+                `FY ${fy1}-${parseInt(fy1) + 1} vs FY ${fy2}-${parseInt(fy2) + 1}`;
+            
+            // Update FY1 data
+            document.getElementById('fy1-po').textContent = fy1Data.po.toLocaleString('id-ID');
+            document.getElementById('fy1-sales').textContent = 'Rp ' + fy1Data.sales.toLocaleString('id-ID');
+            document.getElementById('fy1-qty').textContent = fy1Data.qty.toLocaleString('id-ID');
+            document.getElementById('fy1-dga').textContent = fy1Data.dga.toLocaleString('id-ID');
+            
+            // Update FY2 data
+            document.getElementById('fy2-po').textContent = fy2Data.po.toLocaleString('id-ID');
+            document.getElementById('fy2-sales').textContent = 'Rp ' + fy2Data.sales.toLocaleString('id-ID');
+            document.getElementById('fy2-qty').textContent = fy2Data.qty.toLocaleString('id-ID');
+            document.getElementById('fy2-dga').textContent = fy2Data.dga.toLocaleString('id-ID');
+            
+            // Calculate differences and percentages
+            const diffPO = fy2Data.po - fy1Data.po;
+            const diffSales = fy2Data.sales - fy1Data.sales;
+            const diffQty = fy2Data.qty - fy1Data.qty;
+            const diffDGA = fy2Data.dga - fy1Data.dga;
+            
+            const pctPO = fy1Data.po > 0 ? ((diffPO / fy1Data.po) * 100).toFixed(1) : 0;
+            const pctSales = fy1Data.sales > 0 ? ((diffSales / fy1Data.sales) * 100).toFixed(1) : 0;
+            const pctQty = fy1Data.qty > 0 ? ((diffQty / fy1Data.qty) * 100).toFixed(1) : 0;
+            const pctDGA = fy1Data.dga > 0 ? ((diffDGA / fy1Data.dga) * 100).toFixed(1) : 0;
+            
+            // Update differences with percentages
+            updateDiffElement('diff-po', diffPO, pctPO, false);
+            updateDiffElement('diff-sales', diffSales, pctSales, true);
+            updateDiffElement('diff-qty', diffQty, pctQty, false);
+            updateDiffElement('diff-dga', diffDGA, pctDGA, false);
+            
+            // Update growth badge
+            const overallGrowth = pctSales;
+            document.getElementById('fy-growth-value').textContent = (overallGrowth >= 0 ? '+' : '') + overallGrowth + '%';
+            document.getElementById('fy-growth-value').className = 'text-2xl font-bold ' + (overallGrowth >= 0 ? 'text-green-300' : 'text-red-300');
+            
+            // Render comparison chart
+            renderFYComparisonChart(fy1Data, fy2Data, fy1, fy2);
+            
+            // Update insights
+            updateComparisonInsights(fy1Data, fy2Data);
+            
+            // Show results
+            document.getElementById('fy-comparison-results').classList.remove('hidden');
+        };
+        
+        function updateDiffElement(id, diff, pct, isRupiah) {
+            const prefix = diff >= 0 ? '+' : '';
+            const valueText = isRupiah ? prefix + 'Rp ' + Math.abs(diff).toLocaleString('id-ID') : prefix + diff.toLocaleString('id-ID');
+            const pctColor = diff >= 0 ? 'bg-green-500 text-white' : 'bg-red-500 text-white';
+            
+            document.getElementById(id).textContent = valueText;
+            document.getElementById(id).className = (id.includes('sales') ? 'text-sm' : 'text-xl') + ' font-extrabold text-white';
+            document.getElementById(id + '-pct').textContent = (pct >= 0 ? '+' : '') + pct + '%';
+            document.getElementById(id + '-pct').className = 'text-xs font-bold px-2 py-1 rounded-full ' + pctColor;
+        }
+
+        function calculateFYMetricsDetailed(fiscalYear) {
+            const allPOs = appState.purchaseOrders || [];
+            let allDGA = [];
+            if (Array.isArray(appState.dgaActivities)) {
+                allDGA = appState.dgaActivities;
+            } else if (appState.dgaActivities && typeof appState.dgaActivities === 'object') {
+                allDGA = Object.values(appState.dgaActivities).flat();
+            }
+            
+            // Filter by fiscal year
+            const pos = allPOs.filter(po => {
+                if (!po.poDate) return false;
+                return getFiscalYear(new Date(po.poDate)) === fiscalYear;
+            });
+            
+            const dgaActivities = allDGA.filter(act => {
+                if (!act.month) return false;
+                return getFiscalYear(new Date(act.month + '-01')) === fiscalYear;
+            });
+            
+            // Calculate metrics by month
+            const monthlyData = {};
+            for (let m = 4; m <= 15; m++) {
+                const month = m > 12 ? m - 12 : m;
+                const year = m > 12 ? fiscalYear + 1 : fiscalYear;
+                const key = `${year}-${String(month).padStart(2, '0')}`;
+                monthlyData[key] = { sales: 0, qty: 0, po: 0 };
+            }
+            
+            // Calculate metrics
+            let qty = 0, sales = 0;
+            pos.forEach(po => {
+                // Add PO count to monthly data (once per PO, not per item)
+                const monthKey = po.poDate ? po.poDate.substring(0, 7) : null;
+                if (monthKey && monthlyData[monthKey]) {
+                    monthlyData[monthKey].po += 1;
+                }
+                
+                if (po.items && Array.isArray(po.items)) {
+                    po.items.forEach(item => {
+                        const releases = item.releases || [];
+                        const releasedQty = releases.reduce((sum, r) => sum + (r.qty || 0), 0);
+                        qty += releasedQty;
+                        sales += releasedQty * (item.price || 0);
+                        
+                        // Add qty and sales to monthly data
+                        if (monthKey && monthlyData[monthKey]) {
+                            monthlyData[monthKey].qty += releasedQty;
+                            monthlyData[monthKey].sales += releasedQty * (item.price || 0);
+                        }
+                    });
+                }
+            });
+            
+            return {
+                po: pos.length,
+                sales: sales,
+                qty: qty,
+                dga: dgaActivities.length,
+                monthlyData: monthlyData
+            };
+        }
+
+        function renderFYComparisonChart(fy1Data, fy2Data, fy1, fy2) {
+            const canvas = document.getElementById('fy-comparison-chart');
+            if (!canvas) return;
+            
+            // Destroy existing chart
+            if (window.fyComparisonChartInstance) {
+                window.fyComparisonChartInstance.destroy();
+            }
+            
+            // Prepare data - sama dengan dashboard
+            const months = ['Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar'];
+            const fy1Sales = [];
+            const fy2Sales = [];
+            
+            // Get all released items
+            const allReleasedItems = [];
+            (appState.purchaseOrders || []).forEach(po => {
+                if (!po.items || !Array.isArray(po.items)) return;
+                po.items.forEach(item => {
+                    if (!item.releases || !Array.isArray(item.releases)) return;
+                    item.releases.forEach(rel => {
+                        if (rel.date) {
+                            allReleasedItems.push({
+                                releaseDate: rel.date,
+                                releaseQty: rel.qty || 0,
+                                price: item.price || 0
+                            });
+                        }
+                    });
+                });
+            });
+            
+            // Calculate monthly sales for each FY
+            for (let m = 4; m <= 15; m++) {
+                const monthIdx = m > 12 ? m - 12 : m;
+                const year1 = m > 12 ? parseInt(fy1) + 1 : parseInt(fy1);
+                const year2 = m > 12 ? parseInt(fy2) + 1 : parseInt(fy2);
+                
+                let fy1MonthSales = 0;
+                let fy2MonthSales = 0;
+                
+                allReleasedItems.forEach(item => {
+                    const d = new Date(item.releaseDate);
+                    if (isNaN(d)) return;
+                    
+                    const itemYear = d.getFullYear();
+                    const itemMonth = d.getMonth() + 1;
+                    
+                    if (itemYear === year1 && itemMonth === monthIdx) {
+                        fy1MonthSales += item.releaseQty * item.price;
+                    }
+                    if (itemYear === year2 && itemMonth === monthIdx) {
+                        fy2MonthSales += item.releaseQty * item.price;
+                    }
+                });
+                
+                fy1Sales.push(fy1MonthSales / 1000000); // Convert to millions
+                fy2Sales.push(fy2MonthSales / 1000000);
+            }
+            
+            const ctx = canvas.getContext('2d');
+            window.fyComparisonChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: `FY ${fy1}-${parseInt(fy1) + 1}`,
+                        data: fy1Sales,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 10,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverBackgroundColor: 'rgb(59, 130, 246)',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3
+                    }, {
+                        label: `FY ${fy2}-${parseInt(fy2) + 1}`,
+                        data: fy2Sales,
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 10,
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverBackgroundColor: 'rgb(16, 185, 129)',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#e5e7eb',
+                                font: { size: 12, weight: 'bold' },
+                                usePointStyle: true,
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                            titleColor: '#e5e7eb',
+                            bodyColor: '#e5e7eb',
+                            borderColor: '#374151',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': Rp ' + (context.parsed.y * 1000000).toLocaleString('id-ID');
+                                },
+                                afterBody: function(tooltipItems) {
+                                    if (tooltipItems.length === 2) {
+                                        const fy1Value = tooltipItems[0].parsed.y;
+                                        const fy2Value = tooltipItems[1].parsed.y;
+                                        const diff = fy2Value - fy1Value;
+                                        const growth = fy1Value > 0 ? ((diff / fy1Value) * 100).toFixed(1) : 0;
+                                        const growthText = growth >= 0 ? '+' + growth + '%' : growth + '%';
+                                        const diffText = (diff >= 0 ? '+' : '') + 'Rp ' + (diff * 1000000).toLocaleString('id-ID');
+                                        return ['\n━━━━━━━━━━━━━━━', '📊 Growth: ' + growthText, '💰 Difference: ' + diffText];
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#9ca3af',
+                                callback: function(value) {
+                                    return 'Rp ' + (value / 1000000).toFixed(1) + 'M';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateComparisonInsights(fy1Data, fy2Data) {
+            // Find best month
+            let bestMonth = '';
+            let bestValue = 0;
+            const months = ['Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'Mar'];
+            
+            for (let m = 4; m <= 15; m++) {
+                const month = m > 12 ? m - 12 : m;
+                const year2 = m > 12 ? parseInt(document.getElementById('fy-compare-2').value) + 1 : parseInt(document.getElementById('fy-compare-2').value);
+                const key = `${year2}-${String(month).padStart(2, '0')}`;
+                const sales = fy2Data.monthlyData[key]?.sales || 0;
+                
+                if (sales > bestValue) {
+                    bestValue = sales;
+                    bestMonth = months[m - 4];
+                }
+            }
+            
+            document.getElementById('best-month').textContent = bestMonth || '-';
+            document.getElementById('best-month-value').textContent = 'Rp ' + bestValue.toLocaleString('id-ID');
+            
+            // Calculate average growth
+            const totalGrowth = ((fy2Data.sales - fy1Data.sales) / fy1Data.sales * 100);
+            const avgGrowth = (totalGrowth / 12).toFixed(1);
+            document.getElementById('avg-growth').textContent = (avgGrowth >= 0 ? '+' : '') + avgGrowth + '% per bulan';
+            
+            // Total comparison
+            const perfDiff = fy2Data.sales - fy1Data.sales;
+            let perfText = '';
+            let perfIcon = '';
+            if (perfDiff > 0) {
+                perfText = 'Performa Meningkat';
+                perfIcon = '📈';
+            } else if (perfDiff < 0) {
+                perfText = 'Performa Menurun';
+                perfIcon = '📉';
+            } else {
+                perfText = 'Performa Stabil';
+                perfIcon = '➡️';
+            }
+            document.getElementById('total-comparison').textContent = perfIcon + ' ' + perfText;
+        }
+
+        function formatDiff(value, isRupiah = false) {
+            const prefix = value >= 0 ? '+' : '';
+            if (isRupiah) {
+                return prefix + 'Rp ' + Math.abs(value).toLocaleString('id-ID');
+            }
+            return prefix + value.toLocaleString('id-ID');
+        }
+
+        window.clearFYComparison = function() {
+            document.getElementById('fy-compare-1').value = '';
+            document.getElementById('fy-compare-2').value = '';
+            document.getElementById('fy-comparison-results').classList.add('hidden');
+        };
 
         // Add event listeners for DGA (removed old listeners)
 
@@ -4991,14 +5744,14 @@ function initProductAreaPage() {
             if (item.type === 'group') {
                 const groupId = item.label.replace(/\s+/g, '-').toLowerCase();
                 const submenuItems = item.items.map(subitem => 
-                    `<a href="#" onclick="showPage('${subitem.id}')" id="nav-${subitem.id}" class="nav-link flex items-center gap-2 py-1.5 px-3 pl-9 text-xs rounded-md text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    `<a href="#" onclick="showPage('${subitem.id}')" id="nav-${subitem.id}" class="nav-link flex items-center gap-2 py-1.5 px-3 pl-9 text-xs rounded-md text-blue-100 hover:bg-blue-700 hover:text-white transition-colors">
                         ${subitem.icon}<span>${subitem.label}</span>
                     </a>`
                 ).join('');
                 
                 return `
                     <div class="nav-group">
-                        <a href="#" onclick="toggleNavGroup('${groupId}'); return false;" class="nav-group-header flex items-center justify-between py-2 px-3 text-sm rounded-md text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+                        <a href="#" onclick="toggleNavGroup('${groupId}'); return false;" class="nav-group-header flex items-center justify-between py-2 px-3 text-sm rounded-md text-blue-50 hover:bg-blue-800 font-medium transition-colors">
                             <div class="flex items-center gap-2">
                                 ${item.icon}<span>${item.label}</span>
                             </div>
@@ -5012,7 +5765,7 @@ function initProductAreaPage() {
                     </div>
                 `;
             }
-            return `<a href="#" onclick="showPage('${item.id}')" id="nav-${item.id}" class="nav-link flex items-center gap-2 py-2 px-3 text-sm rounded-md text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+            return `<a href="#" onclick="showPage('${item.id}')" id="nav-${item.id}" class="nav-link flex items-center gap-2 py-2 px-3 text-sm rounded-md text-blue-100 hover:bg-blue-700 hover:text-white transition-colors">
                         ${item.icon}<span>${item.label}</span>
                     </a>`;
         }).join('');
@@ -5064,8 +5817,13 @@ function initProductAreaPage() {
         const pageElement = document.getElementById(pageId + '-page');
         if (pageElement) pageElement.style.display = 'block';
         
-        const navItem = navItems.find(item => item.id === pageId);
-        if(navItem) pageTitle.textContent = navItem.label;
+        // Update page title - show only for dashboard, hide for other pages
+        if (pageId === 'dashboard') {
+            pageTitle.style.display = 'block';
+            pageTitle.textContent = 'Dashboard';
+        } else {
+            pageTitle.style.display = 'none';
+        }
 
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         document.getElementById(`nav-${pageId}`)?.classList.add('active');
@@ -5338,6 +6096,7 @@ function initProductAreaPage() {
                                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Qty</th>
                                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">No Lot</th>
                                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Keterangan</th>
+                                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="stock-table-body" class="bg-white divide-y divide-gray-200">
@@ -5639,8 +6398,16 @@ function initProductAreaPage() {
                 <div class="space-y-6">
                     <!-- Header -->
                     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
-                        <h3 class="text-2xl font-bold mb-2">DGA - Kegiatan Team</h3>
-                        <p class="text-blue-100 text-sm">Kelola aktivitas Business Solution per minggu</p>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">DGA - Kegiatan Team</h3>
+                                <p class="text-blue-100 text-sm">Kelola aktivitas Business Solution per minggu</p>
+                            </div>
+                            <button onclick="openPublicDGAModal()" class="group relative px-6 py-3 bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 border-2 border-white/30">
+                                <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                <span>Link Public BS</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Quick Add BS Section -->
@@ -5725,13 +6492,14 @@ function initProductAreaPage() {
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead>
-                                    <tr class="bg-gray-50 border-b-2 border-gray-200">
-                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider w-32">Business Solution</th>
-                                        <th class="px-4 py-3 text-center text-xs font-bold text-blue-700 uppercase tracking-wider bg-blue-50">W1</th>
-                                        <th class="px-4 py-3 text-center text-xs font-bold text-green-700 uppercase tracking-wider bg-green-50">W2</th>
-                                        <th class="px-4 py-3 text-center text-xs font-bold text-yellow-700 uppercase tracking-wider bg-yellow-50">W3</th>
-                                        <th class="px-4 py-3 text-center text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-50">W4</th>
-                                        <th class="px-4 py-3 text-center text-xs font-bold text-pink-700 uppercase tracking-wider bg-pink-50">W5</th>
+                                    <tr class="bg-gradient-to-r from-gray-100 to-gray-50 border-b-2 border-gray-300">
+                                        <th class="px-4 py-3 text-left text-xs font-extrabold text-gray-900 uppercase tracking-wider w-36 sticky left-0 bg-white z-20">Business Solution</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-blue-900 uppercase tracking-wider bg-blue-50 border-l border-blue-200">W1</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-green-900 uppercase tracking-wider bg-green-50 border-l border-green-200">W2</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-yellow-900 uppercase tracking-wider bg-yellow-50 border-l border-yellow-200">W3</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-purple-900 uppercase tracking-wider bg-purple-50 border-l border-purple-200">W4</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-pink-900 uppercase tracking-wider bg-pink-50 border-l border-pink-200">W5</th>
+                                        <th class="px-4 py-3 text-center text-xs font-extrabold text-gray-900 uppercase tracking-wider bg-gradient-to-br from-yellow-100 to-orange-100 border-l-2 border-orange-300 shadow-inner">📊 Total</th>
                                     </tr>
                                 </thead>
                                 <tbody id="dga-weekly-table-body" class="divide-y divide-gray-200">
@@ -5804,8 +6572,28 @@ function initProductAreaPage() {
                                     <option value="quarter">Quarter Ini</option>
                                     <option value="year">Tahun Ini</option>
                                 </select>
+                                <button onclick="toggleFYComparison()" id="fy-compare-btn" class="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg font-medium shadow-md hover:bg-white/30 transition border border-white/30">
+                                    📊 Compare FY
+                                </button>
                                 <button onclick="window.print()" class="px-4 py-2 bg-white text-purple-600 rounded-lg font-medium shadow-md hover:bg-gray-50 transition">
                                     🖨️ Print
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- FY Comparison Panel (Hidden by default) -->
+                        <div id="fy-compare-panel" class="hidden mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
+                            <div class="flex items-center gap-4 flex-wrap">
+                                <span class="text-sm font-semibold text-white">Bandingkan:</span>
+                                <select id="fy-compare-1" onchange="window.refreshFYComparison()" class="px-3 py-2 bg-white text-gray-800 rounded-lg text-sm font-medium shadow-md">
+                                    <option value="">Pilih FY 1</option>
+                                </select>
+                                <span class="text-white font-bold">vs</span>
+                                <select id="fy-compare-2" onchange="window.refreshFYComparison()" class="px-3 py-2 bg-white text-gray-800 rounded-lg text-sm font-medium shadow-md">
+                                    <option value="">Pilih FY 2</option>
+                                </select>
+                                <button onclick="clearFYComparison()" class="px-3 py-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg text-sm font-medium shadow-md transition">
+                                    ✕ Clear
                                 </button>
                             </div>
                         </div>
@@ -5855,6 +6643,215 @@ function initProductAreaPage() {
                         </div>
                     </div>
 
+                    <!-- DGA Summary -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-4">
+                            <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                Ringkasan Aktivitas DGA
+                            </h4>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="pres-dga-summary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FY Comparison Results (Hidden by default) -->
+                    <div id="fy-comparison-results" class="hidden space-y-6">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-2xl shadow-2xl p-8 text-white border-2 border-white/20">
+                            <div class="flex items-center justify-between flex-wrap gap-4">
+                                <div>
+                                    <h4 class="text-3xl font-extrabold mb-2 flex items-center gap-3">
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                        Analisis Perbandingan Fiscal Year
+                                    </h4>
+                                    <p id="fy-comparison-title" class="text-lg opacity-95 font-medium"></p>
+                                </div>
+                                <div class="flex gap-2">
+                                    <div id="fy-growth-badge" class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
+                                        <span class="text-xs font-semibold opacity-90">Growth Rate</span>
+                                        <div id="fy-growth-value" class="text-2xl font-bold"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Main Comparison Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- FY 1 Column -->
+                            <div class="bg-white rounded-2xl shadow-xl border-2 border-blue-200 overflow-hidden">
+                                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 px-6 py-4">
+                                    <h5 id="fy1-header" class="text-lg font-bold text-white flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        FY 1
+                                    </h5>
+                                </div>
+                                <div class="p-5 space-y-3">
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total PO</span>
+                                        <span id="fy1-po" class="text-xl font-bold text-blue-600">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total Sales</span>
+                                        <span id="fy1-sales" class="text-sm font-bold text-green-600">Rp 0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total Qty</span>
+                                        <span id="fy1-qty" class="text-xl font-bold text-yellow-600">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Aktivitas DGA</span>
+                                        <span id="fy1-dga" class="text-xl font-bold text-purple-600">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Comparison/Difference Column -->
+                            <div class="bg-white rounded-2xl shadow-2xl border-4 border-orange-400 overflow-hidden relative">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-orange-200/20 rounded-full -mr-16 -mt-16"></div>
+                                <div class="absolute bottom-0 left-0 w-24 h-24 bg-pink-200/20 rounded-full -ml-12 -mb-12"></div>
+                                <div class="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 px-6 py-4 relative z-10">
+                                    <h5 class="text-lg font-bold text-white flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                        Selisih & Growth
+                                    </h5>
+                                </div>
+                                <div class="p-5 space-y-3 relative z-10">
+                                    <div class="flex flex-col py-3 border-b border-white/20 bg-white/10 backdrop-blur-sm rounded-lg px-3">
+                                        <span class="text-xs font-bold text-white mb-2 uppercase tracking-wide">PO Change</span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span id="diff-po" class="text-xl font-extrabold text-white"></span>
+                                            <span id="diff-po-pct" class="text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col py-3 border-b border-white/20 bg-white/10 backdrop-blur-sm rounded-lg px-3">
+                                        <span class="text-xs font-bold text-white mb-2 uppercase tracking-wide">Sales Change</span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span id="diff-sales" class="text-sm font-extrabold text-white"></span>
+                                            <span id="diff-sales-pct" class="text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col py-3 border-b border-white/20 bg-white/10 backdrop-blur-sm rounded-lg px-3">
+                                        <span class="text-xs font-bold text-white mb-2 uppercase tracking-wide">Qty Change</span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span id="diff-qty" class="text-xl font-extrabold text-white"></span>
+                                            <span id="diff-qty-pct" class="text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col py-3 bg-white/10 backdrop-blur-sm rounded-lg px-3">
+                                        <span class="text-xs font-bold text-white mb-2 uppercase tracking-wide">DGA Change</span>
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span id="diff-dga" class="text-xl font-extrabold text-white"></span>
+                                            <span id="diff-dga-pct" class="text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- FY 2 Column -->
+                            <div class="bg-white rounded-2xl shadow-xl border-2 border-green-200 overflow-hidden">
+                                <div class="bg-gradient-to-br from-green-500 to-emerald-600 px-6 py-4">
+                                    <h5 id="fy2-header" class="text-lg font-bold text-white flex items-center gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        FY 2
+                                    </h5>
+                                </div>
+                                <div class="p-5 space-y-3">
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total PO</span>
+                                        <span id="fy2-po" class="text-xl font-bold text-blue-600">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total Sales</span>
+                                        <span id="fy2-sales" class="text-sm font-bold text-green-600">Rp 0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Total Qty</span>
+                                        <span id="fy2-qty" class="text-xl font-bold text-yellow-600">0</span>
+                                    </div>
+                                    <div class="flex justify-between items-center py-3">
+                                        <span class="text-xs font-semibold text-gray-600 uppercase">Aktivitas DGA</span>
+                                        <span id="fy2-dga" class="text-xl font-bold text-purple-600">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Comparison Chart -->
+                        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+                                <h5 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                                    Grafik Perbandingan Penjualan Bulanan
+                                </h5>
+                            </div>
+                            <div class="p-6">
+                                <div style="height: 400px;">
+                                    <canvas id="fy-comparison-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Insights -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border-l-4 border-blue-500 shadow-lg">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-sm font-semibold text-blue-700">Best Month</span>
+                                </div>
+                                <div id="best-month" class="text-xl font-bold text-blue-900">-</div>
+                                <div id="best-month-value" class="text-xs text-blue-600 mt-1">-</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 border-l-4 border-green-500 shadow-lg">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                    <span class="text-sm font-semibold text-green-700">Avg Monthly Growth</span>
+                                </div>
+                                <div id="avg-growth" class="text-xl font-bold text-green-900">-</div>
+                                <div class="text-xs text-green-600 mt-1">Month over Month</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 border-l-4 border-purple-500 shadow-lg">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                    <span class="text-sm font-semibold text-purple-700">Total Comparison</span>
+                                </div>
+                                <div id="total-comparison" class="text-xl font-bold text-purple-900">-</div>
+                                <div class="text-xs text-purple-600 mt-1">Performance Indicator</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Distributor Summary -->
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-4 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                <h4 class="text-lg font-bold text-white">Stok Distributor</h4>
+                            </div>
+                            <span id="pres-stock-count" class="px-3 py-1 bg-white/20 rounded-full text-sm font-semibold text-white">0 item</span>
+                        </div>
+                        <div class="p-6">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Tanggal</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Distributor</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Varietas</th>
+                                            <th class="px-4 py-3 text-right font-semibold text-gray-700">Qty (kg)</th>
+                                            <th class="px-4 py-3 text-center font-semibold text-gray-700">Lot Number</th>
+                                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Catatan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="pres-stock-table" class="divide-y divide-gray-200">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Charts Section -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <!-- Sales Trend Chart -->
@@ -5875,13 +6872,33 @@ function initProductAreaPage() {
                             <div style="height: 250px;"><canvas id="top-varieties-chart"></canvas></div>
                         </div>
 
-                        <!-- DGA Activities Chart -->
-                        <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                            <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                                Aktivitas DGA
-                            </h4>
-                            <div style="height: 250px;"><canvas id="dga-activities-chart"></canvas></div>
+                        <!-- DGA Activities Detail per BS -->
+                        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                            <div class="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-4">
+                                <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                    Detail Kegiatan per BS
+                                </h4>
+                            </div>
+                            <div class="p-6">
+                                <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                                    <table class="w-full text-sm" id="dga-bs-detail-table">
+                                        <thead class="bg-gray-50 sticky top-0">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left font-semibold text-gray-700">Business Solution</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-blue-700">FM</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-green-700">ODP</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-yellow-700">FT</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-purple-700">FFD</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-pink-700">Display</th>
+                                                <th class="px-3 py-3 text-center font-semibold text-gray-700 bg-gray-100">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dga-bs-detail-body" class="divide-y divide-gray-200">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- PO Status Chart -->
@@ -5926,17 +6943,6 @@ function initProductAreaPage() {
                             <div class="p-6">
                                 <div class="space-y-3" id="pres-top-customers">
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DGA Summary -->
-                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                        <div class="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-4">
-                            <h4 class="text-lg font-bold text-white">Ringkasan Aktivitas DGA</h4>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-2 md:grid-cols-5 gap-4" id="pres-dga-summary">
                             </div>
                         </div>
                     </div>
@@ -7288,7 +8294,7 @@ function saveDistributorChanges(event) {
         filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
         
         if (filtered.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500">Tidak ada data sesuai filter</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">Tidak ada data sesuai filter</td></tr>';
             emptyState.classList.add('hidden');
             return;
         }
@@ -7311,6 +8317,18 @@ function saveDistributorChanges(event) {
                     <td class="px-4 py-3 text-sm font-semibold text-green-600">${stock.qty.toLocaleString('id-ID')} ${stock.unit || 'pcs'}</td>
                     <td class="px-4 py-3 text-sm font-mono text-gray-600">${stock.lotNumber || '-'}</td>
                     <td class="px-4 py-3 text-sm text-gray-600">${stock.notes || '-'}</td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex gap-2">
+                            <button onclick="editStockDistributor(${stock.id})" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs font-medium flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                Edit
+                            </button>
+                            <button onclick="deleteStockDistributor(${stock.id})" class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-xs font-medium flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                Hapus
+                            </button>
+                        </div>
+                    </td>
                 </tr>
             `;
         }).join('');
@@ -7338,6 +8356,89 @@ function saveDistributorChanges(event) {
                 appState.distributors.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
         }
     }
+    
+    window.editStockDistributor = async function(stockId) {
+        const stock = appState.stockDistributor.find(s => s.id === stockId);
+        if (!stock) {
+            showToast('Data stok tidak ditemukan', 'error');
+            return;
+        }
+        
+        const variety = appState.varieties.find(v => v.id == stock.varietyId);
+        const varietyName = variety ? variety.name : 'Unknown';
+        
+        const newQty = prompt(`Edit Quantity untuk ${varietyName}\nDistributor: ${stock.distributorName}\nQty saat ini: ${stock.qty}`, stock.qty);
+        if (newQty === null) return; // User cancelled
+        
+        const qtyNum = parseInt(newQty);
+        if (isNaN(qtyNum) || qtyNum < 0) {
+            showToast('Quantity harus berupa angka positif', 'error');
+            return;
+        }
+        
+        const newLotNumber = prompt('Edit No Lot', stock.lotNumber || '');
+        if (newLotNumber === null) return; // User cancelled
+        
+        const newNotes = prompt('Edit Keterangan', stock.notes || '');
+        if (newNotes === null) return; // User cancelled
+        
+        // Update stock data
+        stock.qty = qtyNum;
+        stock.lotNumber = newLotNumber;
+        stock.notes = newNotes;
+        stock.updatedAt = new Date().toISOString();
+        
+        // Save to localStorage
+        localStorage.setItem('advantaSalesData', JSON.stringify(appState));
+        
+        // Save to Firestore if logged in
+        if (currentUser && typeof window.saveData === 'function') {
+            try {
+                await window.saveData();
+            } catch (error) {
+                console.error('Error saving to Firestore:', error);
+            }
+        }
+        
+        renderStockTable();
+        showToast('Data stok berhasil diupdate', 'success');
+    };
+    
+    window.deleteStockDistributor = async function(stockId) {
+        const stock = appState.stockDistributor.find(s => s.id === stockId);
+        if (!stock) {
+            showToast('Data stok tidak ditemukan', 'error');
+            return;
+        }
+        
+        const variety = appState.varieties.find(v => v.id == stock.varietyId);
+        const varietyName = variety ? variety.name : 'Unknown';
+        
+        const confirmation = confirm(`Hapus data stok ini?\n\nDistributor: ${stock.distributorName}\nVarietas: ${varietyName}\nQty: ${stock.qty} ${stock.unit || 'pcs'}\nLot: ${stock.lotNumber || '-'}`);
+        
+        if (!confirmation) return;
+        
+        // Remove from array
+        const index = appState.stockDistributor.findIndex(s => s.id === stockId);
+        if (index > -1) {
+            appState.stockDistributor.splice(index, 1);
+            
+            // Save to localStorage
+            localStorage.setItem('advantaSalesData', JSON.stringify(appState));
+            
+            // Save to Firestore if logged in
+            if (currentUser && typeof window.saveData === 'function') {
+                try {
+                    await window.saveData();
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                }
+            }
+            
+            renderStockTable();
+            showToast('Data stok berhasil dihapus', 'success');
+        }
+    };
     
     function populateDistributorSelect() {
         const select = document.getElementById('distributor-select');
@@ -13854,10 +14955,73 @@ async function initializePublicStockForm(token) {
             varietySelect.innerHTML = '<option value="">Tidak ada varietas tersedia</option>';
         }
         
+        // Render existing stock list for this distributor
+        renderPublicStockList(foundVarieties);
+        
     } catch (error) {
         console.error('Error loading public stock form:', error);
         alert('Gagal memuat data: ' + error.message);
     }
+}
+
+function renderPublicStockList(varieties) {
+    const listContainer = document.getElementById('public-stock-list');
+    const listSection = document.getElementById('public-stock-list-section');
+    
+    if (!listContainer || !publicDistributorData || !publicUserStockData) {
+        if (listSection) listSection.style.display = 'none';
+        return;
+    }
+    
+    // Filter stock for current distributor only
+    const distributorStock = publicUserStockData.filter(
+        s => s.distributorId == publicDistributorData.distributorId
+    );
+    
+    if (distributorStock.length === 0) {
+        listSection.style.display = 'none';
+        return;
+    }
+    
+    // Sort by date descending
+    distributorStock.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    
+    listSection.style.display = 'block';
+    
+    listContainer.innerHTML = distributorStock.map(stock => {
+        const variety = varieties.find(v => v.id == stock.varietyId);
+        const varietyName = variety ? variety.name : 'Unknown';
+        const dateFormatted = new Date(stock.date).toLocaleDateString('id-ID', { 
+            day: '2-digit', 
+            month: 'short', 
+            year: 'numeric' 
+        });
+        
+        return `
+            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h4 class="font-bold text-gray-800">${varietyName}</h4>
+                        <p class="text-sm text-gray-500">${dateFormatted}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-green-600">${stock.qty.toLocaleString('id-ID')}</p>
+                        <p class="text-xs text-gray-500">${stock.unit || 'pcs'}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs text-gray-600 mt-3 pt-3 border-t border-gray-100">
+                    <div>
+                        <span class="font-medium">No Lot:</span>
+                        <span class="ml-1 font-mono">${stock.lotNumber || '-'}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium">Keterangan:</span>
+                        <span class="ml-1">${stock.notes || '-'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function checkExistingStock() {
@@ -13971,6 +15135,15 @@ document.getElementById('public-stock-form')?.addEventListener('submit', async (
             
             await setDoc(userDocRef, { data: currentData });
             
+            // Update local data
+            publicUserStockData = currentData.stockDistributor;
+            
+            // Reload varieties for rendering
+            const varieties = userData.data?.varieties || [];
+            
+            // Refresh stock list
+            renderPublicStockList(varieties);
+            
             // Show success message
             document.getElementById('public-stock-form').style.display = 'none';
             document.getElementById('public-stock-success').classList.remove('hidden');
@@ -13987,6 +15160,7 @@ function resetPublicStockForm() {
     document.getElementById('public-stock-date').value = today;
     document.getElementById('public-stock-form').style.display = 'block';
     document.getElementById('public-stock-success').classList.add('hidden');
+    document.getElementById('stock-status-hint').classList.add('hidden');
 }
 </script>
 

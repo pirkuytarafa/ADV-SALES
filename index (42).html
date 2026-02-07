@@ -118,6 +118,9 @@ body{background:var(--bg-main);color:var(--text-main)}
             height: 100%;
             position: relative;
             overflow: hidden;
+            /* DEBUG: Add visible marker */
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid lime;
         }
         
         .slide {
@@ -22834,11 +22837,12 @@ function generateSlides() {
         slideEl.className = `slide ${slide.bg} ${index === 0 ? 'active' : ''}`;
         slideEl.setAttribute('data-slide-id', slide.id);
         
-        // FORCE inline styles for visibility
+        // FORCE inline styles for visibility + DEBUG border
         if (index === 0) {
             slideEl.style.opacity = '1';
             slideEl.style.zIndex = '1';
             slideEl.style.pointerEvents = 'auto';
+            slideEl.style.border = '5px solid cyan'; // DEBUG marker
         } else {
             slideEl.style.opacity = '0';
             slideEl.style.zIndex = '0';
@@ -22853,6 +22857,15 @@ function generateSlides() {
             console.error('[SLIDESHOW] Error generating slide:', slide.id, e);
             slideEl.innerHTML = `<div class="slide-content" style="justify-content:center;align-items:center;text-align:center;"><h2 style="color:#ff6b6b; font-size:2rem;">⚠️ Error: ${slide.name}</h2><p style="color:white; font-size:1.2rem; margin-top:1rem;">${e.message}</p></div>`;
         }
+        
+        // Add TEST content for debugging
+        if (index === 0) {
+            const testDiv = document.createElement('div');
+            testDiv.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:red;color:white;padding:2rem;font-size:3rem;z-index:9999;border:5px solid yellow;';
+            testDiv.textContent = 'TEST SLIDE VISIBLE?';
+            slideEl.appendChild(testDiv);
+        }
+        
         container.appendChild(slideEl);
     });
     
@@ -23066,12 +23079,16 @@ function showSlide(index) {
     
     const container = document.getElementById('slides-container');
     if (!container) { console.error('[SLIDE] Container not found'); return; }
-    const slides = container.querySelectorAll('.slide');
-    console.log('[SLIDE] showSlide(' + index + '), found', slides.length, 'slides');
-    
-    slides.forEach((slide, i) => {
-        if (i === index) {
-            slide.classList.add('active');
+    const slslide.style.border = '5px solid cyan'; // DEBUG marker
+            slide.style.background = 'rgba(0,255,0,0.1)'; // DEBUG tint
+            console.log('[SLIDE] Slide', i, 'SET ACTIVE (forced inline style), classes:', slide.className);
+        } else {
+            slide.classList.remove('active');
+            slide.style.opacity = '0';
+            slide.style.zIndex = '0';
+            slide.style.pointerEvents = 'none';
+            slide.style.border = '';
+            slide.style.background = '
             // FORCE inline style to override any CSS issues
             slide.style.opacity = '1';
             slide.style.zIndex = '1';

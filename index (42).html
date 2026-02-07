@@ -22502,6 +22502,7 @@ function prepareSlideshowData() {
     };
     
     try {
+    console.log('[SLIDESHOW] prepareSlideshowData starting...');
     // Get current data from presentation page
     const totalPO = document.getElementById('pres-total-po')?.textContent || '0';
     const totalSales = document.getElementById('pres-total-sales')?.textContent || 'Rp 0';
@@ -22797,21 +22798,22 @@ function prepareSlideshowData() {
             totalDGA,
             totalDistributors
         },
-        dgaTypes,
-        dgaBSData,
-        dgaTotals,
-        farmerReach: farmerReach.toLocaleString('id-ID'),
-        stockSummary,
-        stockByVariety,
-        planSummary,
-        planCards,
-        fyComparison,
-        growthData,
-        growthInfo: { currentFY: 'FY' + currentFY + '/' + (currentFY + 1), previousFY: 'FY' + previousFY + '/' + (previousFY + 1) },
-        topCustomers
+        dgaTypes: dgaTypes || {},
+        dgaBSData: dgaBSData || [],
+        dgaTotals: dgaTotals || {},
+        farmerReach: (typeof farmerReach === 'number' ? farmerReach : 0).toLocaleString('id-ID'),
+        stockSummary: stockSummary || { totalKG: 0, totalItems: 0, totalVarieties: 0, totalDistributors: 0 },
+        stockByVariety: stockByVariety || [],
+        planSummary: planSummary || { count: 0, totalQty: 0, distributors: 0, varieties: 0, totalValue: 'Rp 0' },
+        planCards: planCards || [],
+        fyComparison: fyComparison || null,
+        growthData: growthData || [],
+        growthInfo: { currentFY: 'FY' + (currentFY || 0) + '/' + ((currentFY || 0) + 1), previousFY: 'FY' + (previousFY || 0) + '/' + ((previousFY || 0) + 1) },
+        topCustomers: topCustomers || []
     };
+    console.log('[SLIDESHOW] slideshowData prepared OK, keys:', Object.keys(slideshowData));
     } catch(err) {
-        console.error('Error preparing slideshow data:', err);
+        console.error('[SLIDESHOW] Error preparing slideshow data:', err);
         slideshowData = safeDefaults;
     }
 }
@@ -22819,8 +22821,10 @@ function prepareSlideshowData() {
 function generateSlides() {
     // Refresh data before generating slides
     prepareSlideshowData();
+    console.log('[SLIDESHOW] generateSlides called, slideshowData is:', slideshowData ? 'SET' : 'NULL', ', selectedSlides:', selectedSlides.length);
     
     const container = document.getElementById('slides-container');
+    if (!container) { console.error('[SLIDESHOW] slides-container not found!'); return; }
     container.innerHTML = '';
     
     selectedSlides.forEach((slide, index) => {
@@ -22828,17 +22832,40 @@ function generateSlides() {
         slideEl.className = `slide ${slide.bg} ${index === 0 ? 'active' : ''}`;
         slideEl.setAttribute('data-slide-id', slide.id);
         try {
-            slideEl.innerHTML = slide.generator(slideshowData);
+            const html = slide.generator(slideshowData);
+            slideEl.innerHTML = html;
+            console.log('[SLIDESHOW] Slide', index+1, slide.id, '- generated OK,', html.length, 'chars');
         } catch(e) {
-            console.error('Error generating slide:', slide.id, e);
-            slideEl.innerHTML = `<div class="slide-content text-center" style="justify-content:center;align-items:center;"><h2 style="color:rgba(255,255,255,0.5);">⚠️ Error loading slide: ${slide.name}</h2><p style="color:rgba(255,255,255,0.3);">${e.message}</p></div>`;
+            console.error('[SLIDESHOW] Error generating slide:', slide.id, e);
+            slideEl.innerHTML = `<div class="slide-content" style="justify-content:center;align-items:center;text-align:center;"><h2 style="color:#ff6b6b; font-size:2rem;">⚠️ Error: ${slide.name}</h2><p style="color:white; font-size:1.2rem; margin-top:1rem;">${e.message}</p></div>`;
         }
         container.appendChild(slideEl);
     });
     
+    console.log('[SLIDESHOW] Total slides appended:', container.children.length);
+    
     totalSlides = selectedSlides.length;
     updateSlideCounter();
     updateProgress();
+    
+    // Debug info overlay (temporary)
+    let debugDiv = document.getElementById('slide-debug-info');
+    if (!debugDiv) {
+        debugDiv = document.createElement('div');
+        debugDiv.id = 'slide-debug-info';
+        debugDiv.style.cssText = 'position:fixed;top:0;left:0;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:10px;padding:8px;z-index:99999;max-width:300px;max-height:200px;overflow:auto;border:1px solid #0f0;border-radius:0 0 8px 0;';
+        document.getElementById('presentation-slideshow')?.appendChild(debugDiv);
+    }
+    debugDiv.innerHTML = `<b>SLIDESHOW DEBUG</b><br>
+        Slides: ${container.children.length}<br>
+        Data: ${slideshowData ? 'OK' : 'NULL'}<br>
+        ${selectedSlides.map((s,i) => {
+            const el = container.children[i];
+            const hasContent = el ? el.innerHTML.length > 100 : false;
+            return 'S' + (i+1) + ' [' + s.id + ']: ' + (hasContent ? '✅' + el.innerHTML.length + 'ch' : '❌empty');
+        }).join('<br>')}<br>
+        <small>Tap here to hide</small>`;
+    debugDiv.onclick = () => debugDiv.style.display = 'none';
     
     // Render charts after a short delay
     setTimeout(() => {

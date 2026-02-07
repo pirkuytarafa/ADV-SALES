@@ -22361,12 +22361,13 @@ const slideTemplates = [
     }
 ];
 
-function startSlideshow() {
+// Make function globally accessible
+window.startSlideshow = function startSlideshow() {
     // Open settings modal first
     openSettingsModal();
 }
 
-function openSettingsModal() {
+window.openSettingsModal = function openSettingsModal() {
     prepareSlideshowData();
     
     const modal = document.getElementById('slideshow-settings-modal');
@@ -22427,7 +22428,7 @@ function deselectAllSlides() {
     });
 }
 
-function startSlideshowWithSettings() {
+window.startSlideshowWithSettings = function startSlideshowWithSettings() {
     // Get selected slides
     selectedSlides = [];
     slideTemplates.forEach(slide => {
@@ -23119,23 +23120,23 @@ function showSlide(index) {
     if (window.updateSlideshowDebug) window.updateSlideshowDebug();
 }
 
-function nextSlide() {
+window.nextSlide = function nextSlide() {
     if (currentSlideIndex < totalSlides - 1) {
         showSlide(currentSlideIndex + 1);
     }
 }
 
-function prevSlide() {
+window.prevSlide = function prevSlide() {
     if (currentSlideIndex > 0) {
         showSlide(currentSlideIndex - 1);
     }
 }
 
-function firstSlide() {
+window.firstSlide = function firstSlide() {
     showSlide(0);
 }
 
-function lastSlide() {
+window.lastSlide = function lastSlide() {
     showSlide(totalSlides - 1);
 }
 
@@ -23248,7 +23249,7 @@ function stopAutoPlay() {
     }
 }
 
-function exitSlideshow() {
+window.exitSlideshow = function exitSlideshow() {
     const slideshow = document.getElementById('presentation-slideshow');
     slideshow.classList.remove('active');
     document.body.style.overflow = '';

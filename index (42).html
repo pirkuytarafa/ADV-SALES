@@ -21180,6 +21180,28 @@ body.page-po-release .is-selected * {
 })();
 </script>
 
+<!-- CRITICAL: Define slideshow function early to ensure it's always available -->
+<script>
+console.log('[INIT] Defining global slideshow functions...');
+window.startSlideshow = function() {
+    console.log('[SLIDESHOW] startSlideshow() called from onclick');
+    // Will call the real implementation when modal is ready
+    if (window.openSlideshowModal) {
+        window.openSlideshowModal();
+    } else {
+        // Fallback: try to open modal directly
+        const modal = document.getElementById('slideshow-settings-modal');
+        if (modal) {
+            modal.classList.add('active');
+            console.log('[SLIDESHOW] Opened modal directly');
+        } else {
+            console.error('[SLIDESHOW] Modal not found!');
+        }
+    }
+};
+console.log('[INIT] window.startSlideshow defined:', typeof window.startSlideshow);
+</script>
+
 <script>
 // === PUBLIC STOCK INPUT FUNCTIONS ===
 let publicStockToken = null;
@@ -21818,12 +21840,9 @@ let autoPlayInterval = null;
 let selectedSlides = [];
 let allSlideDefinitions = [];
 
-// Define slideshow functions FIRST before templates array
-window.startSlideshow = function() {
-    openSettingsModal();
-};
-
-window.openSettingsModal = function() {
+// Implement the modal opener (called from early-defined window.startSlideshow)
+window.openSlideshowModal = function() {
+    console.log('[SLIDESHOW] openSlideshowModal implementation called');
     prepareSlideshowData();
     
     const modal = document.getElementById('slideshow-settings-modal');

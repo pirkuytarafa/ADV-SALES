@@ -21818,6 +21818,98 @@ let autoPlayInterval = null;
 let selectedSlides = [];
 let allSlideDefinitions = [];
 
+// Define slideshow functions FIRST before templates array
+window.startSlideshow = function() {
+    openSettingsModal();
+};
+
+window.openSettingsModal = function() {
+    prepareSlideshowData();
+    
+    const modal = document.getElementById('slideshow-settings-modal');
+    const container = document.getElementById('slide-checkbox-container');
+    
+    // Generate checkboxes
+    container.innerHTML = slideTemplates.map((slide, index) => `
+        <div class="slide-checkbox-item ${index < slideTemplates.length ? 'selected' : ''}" onclick="toggleSlideSelection('${slide.id}', this)">
+            <label class="slide-checkbox-label">
+                <input type="checkbox" id="slide-${slide.id}" value="${slide.id}" ${index < slideTemplates.length ? 'checked' : ''} onclick="event.stopPropagation()">
+                <span>${slide.icon} ${slide.name}</span>
+            </label>
+            <div class="slide-checkbox-desc">${slide.description}</div>
+        </div>
+    `).join('');
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Setup auto-play toggle
+    const autoPlayCheckbox = document.getElementById('auto-play');
+    if (autoPlayCheckbox && !autoPlayCheckbox.dataset.listenerAdded) {
+        autoPlayCheckbox.addEventListener('change', function() {
+            document.getElementById('autoplay-interval-container').style.display = this.checked ? 'block' : 'none';
+        });
+        autoPlayCheckbox.dataset.listenerAdded = 'true';
+    }
+};
+
+window.startSlideshowWithSettings = function() {
+    const modal = document.getElementById('slideshow-settings-modal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    // Get selected slides
+    const checkboxes = document.querySelectorAll('#slide-checkbox-container input[type="checkbox"]:checked');
+    selectedSlides = Array.from(checkboxes).map(cb => {
+        return slideTemplates.find(t => t.id === cb.value);
+    }).filter(Boolean);
+    
+    if (selectedSlides.length === 0) {
+        alert('Please select at least one slide');
+        modal.classList.add('active');
+        return;
+    }
+    
+    // Get settings
+    const showTimer = document.getElementById('settings-show-timer').checked;
+    const showThumbnails = document.getElementById('settings-show-thumbnails').checked;
+    
+    // Generate slides
+    generateSlides();
+    
+    // Show slideshow
+    const slideshow = document.getElementById('presentation-slideshow');
+    slideshow.classList.add('active');
+    
+    // Show/hide timer
+    if (showTimer) {
+        startPresentationTimer();
+    }
+    
+    // Show/hide thumbnails
+    if (showThumbnails) {
+        generateThumbnails();
+        document.getElementById('thumbnail-nav').style.display = 'flex';
+        setTimeout(() => {
+            document.getElementById('thumbnail-nav').classList.add('visible');
+        }, 100);
+    }
+    
+    // Lock body scroll
+    document.body.style.overflow = 'hidden';
+    
+    // Start at first slide
+    showSlide(0);
+    
+    // Auto-hide controls after 3 seconds
+    autoHideTimer = setTimeout(() => {
+        const controls = document.getElementById('slide-controls');
+        if (controls) {
+            controls.classList.add('hide');
+        }
+    }, 3000);
+};
+
 // Slide definitions
 const slideTemplates = [
     {
@@ -22361,38 +22453,7 @@ const slideTemplates = [
     }
 ];
 
-// Make function globally accessible
-window.startSlideshow = function startSlideshow() {
-    // Open settings modal first
-    openSettingsModal();
-}
-
-window.openSettingsModal = function openSettingsModal() {
-    prepareSlideshowData();
-    
-    const modal = document.getElementById('slideshow-settings-modal');
-    const container = document.getElementById('slide-checkbox-container');
-    
-    // Generate checkboxes
-    container.innerHTML = slideTemplates.map((slide, index) => `
-        <div class="slide-checkbox-item ${index < slideTemplates.length ? 'selected' : ''}" onclick="toggleSlideSelection('${slide.id}', this)">
-            <label class="slide-checkbox-label">
-                <input type="checkbox" id="slide-${slide.id}" value="${slide.id}" ${index < slideTemplates.length ? 'checked' : ''} onclick="event.stopPropagation()">
-                <span>${slide.icon} ${slide.name}</span>
-            </label>
-            <div class="slide-checkbox-desc">${slide.description}</div>
-        </div>
-    `).join('');
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Setup auto-play toggle
-    document.getElementById('auto-play').addEventListener('change', function() {
-        document.getElementById('autoplay-interval-container').style.display = this.checked ? 'block' : 'none';
-    });
-}
-
+// Functions for modal controls
 function closeSettingsModal() {
     const modal = document.getElementById('slideshow-settings-modal');
     modal.classList.remove('active');
@@ -22426,66 +22487,6 @@ function deselectAllSlides() {
         checkbox.checked = false;
         item.classList.remove('selected');
     });
-}
-
-window.startSlideshowWithSettings = function startSlideshowWithSettings() {
-    // Get selected slides
-    selectedSlides = [];
-    slideTemplates.forEach(slide => {
-        const checkbox = document.getElementById(`slide-${slide.id}`);
-        if (checkbox && checkbox.checked) {
-            selectedSlides.push(slide);
-        }
-    });
-    
-    if (selectedSlides.length === 0) {
-        alert('Pilih minimal 1 slide untuk presentasi!');
-        return;
-    }
-    
-    // Get settings
-    const showTimer = document.getElementById('show-timer').checked;
-    const showThumbnails = document.getElementById('show-thumbnails').checked;
-    const autoPlay = document.getElementById('auto-play').checked;
-    const autoPlayIntervalValue = parseInt(document.getElementById('autoplay-interval').value) || 5;
-    
-    // Close modal
-    closeSettingsModal();
-    
-    // Generate slides
-    generateSlides();
-    
-    // Show slideshow
-    const slideshow = document.getElementById('presentation-slideshow');
-    slideshow.classList.add('active');
-    
-    // Show/hide timer
-    if (showTimer) {
-        startPresentationTimer();
-    }
-    
-    // Show/hide thumbnails
-    if (showThumbnails) {
-        generateThumbnails();
-        document.getElementById('thumbnail-nav').style.display = 'flex';
-        setTimeout(() => {
-            document.getElementById('thumbnail-nav').classList.add('visible');
-        }, 100);
-    }
-    
-    // Setup auto-play
-    if (autoPlay) {
-        startAutoPlay(autoPlayIntervalValue);
-    }
-    
-    // Hide sidebar and main content
-    document.body.style.overflow = 'hidden';
-    
-    // Show first slide
-    showSlide(0);
-    
-    // Setup auto-hide controls
-    setupAutoHideControls();
 }
 
 function prepareSlideshowData() {

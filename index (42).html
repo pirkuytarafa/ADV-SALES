@@ -131,11 +131,13 @@ body{background:var(--bg-main);color:var(--text-main)}
             padding: 3rem;
             box-sizing: border-box;
             overflow-y: auto;
+            pointer-events: none;
         }
         
         .slide.active {
-            opacity: 1;
+            opacity: 1 !important;
             z-index: 1;
+            pointer-events: auto;
         }
         
         .slide-content {
@@ -22853,19 +22855,30 @@ function generateSlides() {
     if (!debugDiv) {
         debugDiv = document.createElement('div');
         debugDiv.id = 'slide-debug-info';
-        debugDiv.style.cssText = 'position:fixed;top:0;left:0;background:rgba(0,0,0,0.85);color:#0f0;font-family:monospace;font-size:10px;padding:8px;z-index:99999;max-width:300px;max-height:200px;overflow:auto;border:1px solid #0f0;border-radius:0 0 8px 0;';
+        debugDiv.style.cssText = 'position:fixed;top:0;left:0;background:rgba(0,0,0,0.9);color:#0f0;font-family:monospace;font-size:10px;padding:8px;z-index:99999;max-width:320px;max-height:250px;overflow:auto;border:1px solid #0f0;border-radius:0 0 8px 0;';
         document.getElementById('presentation-slideshow')?.appendChild(debugDiv);
     }
-    debugDiv.innerHTML = `<b>SLIDESHOW DEBUG</b><br>
-        Slides: ${container.children.length}<br>
-        Data: ${slideshowData ? 'OK' : 'NULL'}<br>
-        ${selectedSlides.map((s,i) => {
-            const el = container.children[i];
-            const hasContent = el ? el.innerHTML.length > 100 : false;
-            return 'S' + (i+1) + ' [' + s.id + ']: ' + (hasContent ? '✅' + el.innerHTML.length + 'ch' : '❌empty');
-        }).join('<br>')}<br>
-        <small>Tap here to hide</small>`;
-    debugDiv.onclick = () => debugDiv.style.display = 'none';
+    
+    // Update debug function
+    window.updateSlideshowDebug = function() {
+        const container = document.getElementById('slides-container');
+        const activeSlide = container?.querySelector('.slide.active');
+        debugDiv.innerHTML = `<b>SLIDESHOW DEBUG</b><br>
+            Slides: ${container?.children.length || 0}<br>
+            Data: ${slideshowData ? 'OK' : 'NULL'}<br>
+            Current: ${currentSlideIndex + 1}<br>
+            Active: ${activeSlide ? activeSlide.getAttribute('data-slide-id') : 'NONE'}<br>
+            ${activeSlide ? 'Opacity: ' + window.getComputedStyle(activeSlide).opacity : ''}<br>
+            ${selectedSlides.map((s,i) => {
+                const el = container?.children[i];
+                const hasActive = el?.classList.contains('active');
+                const hasContent = el ? el.innerHTML.length > 100 : false;
+                return 'S' + (i+1) + (hasActive ? '<b>★</b>' : '') + ' [' + s.id + ']: ' + (hasContent ? '✅' : '❌');
+            }).join('<br>')}<br>
+            <small>Check console for logs</small>`;
+    };
+    window.updateSlideshowDebug();
+    debugDiv.onclick = () => { debugDiv.style.display = debugDiv.style.display === 'none' ? 'block' : 'none'; };
     
     // Render charts after a short delay
     setTimeout(() => {
@@ -23040,20 +23053,34 @@ function showSlide(index) {
     if (index < 0 || index >= totalSlides) return;
     
     const container = document.getElementById('slides-container');
-    if (!container) return;
+    if (!container) { console.error('[SLIDE] Container not found'); return; }
     const slides = container.querySelectorAll('.slide');
+    console.log('[SLIDE] showSlide(' + index + '), found', slides.length, 'slides');
+    
     slides.forEach((slide, i) => {
         if (i === index) {
             slide.classList.add('active');
+            console.log('[SLIDE] Slide', i, 'SET ACTIVE, classes:', slide.className);
         } else {
             slide.classList.remove('active');
         }
     });
     
+    // Verify active slide
+    const activeSlide = container.querySelector('.slide.active');
+    if (activeSlide) {
+        console.log('[SLIDE] Active slide:', activeSlide.getAttribute('data-slide-id'), 'opacity:', window.getComputedStyle(activeSlide).opacity, 'zIndex:', window.getComputedStyle(activeSlide).zIndex);
+    } else {
+        console.error('[SLIDE] NO ACTIVE SLIDE FOUND!');
+    }
+    
     currentSlideIndex = index;
     updateSlideCounter();
     updateProgress();
     updateNavigationButtons();
+    
+    // Update debug panel
+    if (window.updateSlideshowDebug) window.updateSlideshowDebug();
 }
 
 function nextSlide() {

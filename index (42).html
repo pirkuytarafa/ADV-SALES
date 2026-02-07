@@ -22833,6 +22833,18 @@ function generateSlides() {
         const slideEl = document.createElement('div');
         slideEl.className = `slide ${slide.bg} ${index === 0 ? 'active' : ''}`;
         slideEl.setAttribute('data-slide-id', slide.id);
+        
+        // FORCE inline styles for visibility
+        if (index === 0) {
+            slideEl.style.opacity = '1';
+            slideEl.style.zIndex = '1';
+            slideEl.style.pointerEvents = 'auto';
+        } else {
+            slideEl.style.opacity = '0';
+            slideEl.style.zIndex = '0';
+            slideEl.style.pointerEvents = 'none';
+        }
+        
         try {
             const html = slide.generator(slideshowData);
             slideEl.innerHTML = html;
@@ -23060,9 +23072,16 @@ function showSlide(index) {
     slides.forEach((slide, i) => {
         if (i === index) {
             slide.classList.add('active');
-            console.log('[SLIDE] Slide', i, 'SET ACTIVE, classes:', slide.className);
+            // FORCE inline style to override any CSS issues
+            slide.style.opacity = '1';
+            slide.style.zIndex = '1';
+            slide.style.pointerEvents = 'auto';
+            console.log('[SLIDE] Slide', i, 'SET ACTIVE (forced inline style), classes:', slide.className);
         } else {
             slide.classList.remove('active');
+            slide.style.opacity = '0';
+            slide.style.zIndex = '0';
+            slide.style.pointerEvents = 'none';
         }
     });
     
